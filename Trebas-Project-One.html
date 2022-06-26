@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+
+<html>
+
+    <head>
+
+        <title>API tests</title>
+        
+        <style>
+            body {
+              background-color:beige;
+              padding-top: 30px;
+              padding-left: 70px;
+              padding-right: 70px;
+              padding-bottom: 70px;
+              padding-top: 20;
+            }
+            ul { 
+                width: 50%;
+                list-style-type: none;
+                margin: 0;
+                padding: 0;
+                overflow: hidden;
+                background-color: rgb(59, 59, 59);
+            }
+            li { float: left; padding: 2px;}
+            li a { 
+                display: block;
+                color: white;
+                text-align: center;
+                padding: 10px 12px;
+                text-decoration: none;
+            }
+            a:hover:not(.active) {
+                background-color: rgb(100, 112, 124);
+            }
+            .active {
+                background-color: rgb(99, 158, 236);
+            }
+            h2 {
+                color: brown;
+                width: 60%;
+                font-size: xx-large;
+                font-family: fantasy;
+                font-stretch:extra-expanded;
+                padding: 5;
+                margin-top: -7%;
+            }
+            .div1 {
+                flex: 1;
+                background-color: rgba(247, 239, 137, 0.651);
+                border-radius: 5;
+                border:2;
+                align-items: center;
+                justify-content: center;
+                padding: 3%;
+            }
+            .classOne {
+                color: #c412d4;
+                /* background-color: bisque; */
+                width: 15%;
+            }
+            .button {
+                background-color: #6f1377;
+                border: none;
+                color: white;
+                padding: 15px 32px;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 16px;
+                margin: 4px 2px;
+                cursor: pointer;
+                -webkit-transition-duration: 0.4s; /* Safari */
+                transition-duration: 0.4s;
+            }
+            .buttonEntry {
+                background-color: #6f1377;
+                border: none;
+                color: white;
+                padding: 5px 10px;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 12px;
+                margin: 2px 2px;
+                cursor: pointer;
+                -webkit-transition-duration: 0.4s; /* Safari */
+                transition-duration: 0.4s;
+            }
+
+            .button1 {
+                box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+            }
+            select{
+                width: 30%;
+            }
+            textarea{
+                margin-top: 1%;
+                width: 30%;
+            }
+
+
+        </style>
+
+    </head>
+
+    <body onload=hideElement()>
+        <center>
+            <br>
+            <br>
+            <!-- Pages list -->
+            <ul>
+                <li><a href="home.html">Home</a></li>
+                <li><a class="active"  href="Trebas-Project-One.html">Trebas Project One</a> </li>
+                <li><a  href="Trebas-Project-Two.html">Trebas Project Two</a> </li>
+            </ul>
+            <hr width="50%">
+        </center>
+
+
+        <div class="entryContainer">
+            <center>
+                User:
+                <p><input type="text" style="width: 20%;" name="username" size="15" maxlength="30" id="user_name" /></p>
+                <button align="center" class="buttonEntry button1" onclick="loginElement()">ENTER</button>
+            </center>
+        </div>
+
+        <div class="container">
+            <center>
+
+                <h2>TREBAS MESSENGER PROJECT</h2>
+
+                <p id="from_api_user_id"></p>
+                <p id="from_api_user_name"></p>
+        
+                <label for="post_msg_type">Selet message type:</label>
+                        <br><br>
+                        <select name="msgType" id="post_msg_type">
+                        <option value="OTHER">OTHER</option>
+                        <option value="HOME">HOME</option>
+                        <option value="JOB">JOB</option>
+                        <option value="LIFE">LIFE</option>
+                        <option value="SCHOOL">SCHOOL</option>
+                        <option value="SHOPPING">SHOPPING</option>
+                        </select>
+                        <br>
+                    
+                    <textarea name="comments" cols="20" rows="4" id="post_text"></textarea>
+                    <br><br>
+                <!-- </form> -->
+        
+                <button class="button button1" onclick="fcnPOST()">POST</button>
+                <p id="sentText" class="classOne"> </p>
+                
+                <button class="button button1" onclick="fcnGET()">GET</button>
+                <br><br>
+    
+                <table id="messages" style="width: 65%"></table>
+
+            </center>
+        </div>
+
+
+        <!-- ----------------------------------------------------------- -->
+        <script>
+
+            function loginElement() {
+                var user_name = document.getElementById("user_name").value;
+                if( user_name.length > 1 ){
+                    // fetch("http://localhost:8080/users/find-by-name?name="+user_name)
+                    fetch("https://trebas-project-one.herokuapp.com/users/find-by-name?name="+user_name)
+                    .then(response => response.json())
+                    .then(json => {
+                        let api_id = `<p>${json.id}</p>`
+                        let api_name = `<p>${json.name}</p>`
+                        
+                        if(api_name==`<p>${user_name}</p>`){
+                            element = document.querySelector('.container');
+                            element.style.visibility = 'visible';
+                            elementEntry = document.querySelector('.entryContainer');
+                            elementEntry.style.visibility = 'hidden';
+                            document.getElementById("from_api_user_id").innerHTML = api_id;
+                            document.getElementById("from_api_user_name").innerHTML = api_name;  
+                        }else{
+                            alert("User not found");
+                        }
+                    });
+                }else{
+                    alert("Enter user name, please");
+                }
+            }
+    
+            function hideElement() {
+                element = document.querySelector('.container');
+                element.style.visibility = 'hidden';
+            }
+
+            function fcnPOST() { 
+
+                document.getElementById("sentText").innerHTML = "Sending... please, wait";
+
+                var text = document.getElementById("post_text").value;
+                if(text.length < 2){
+                    alert("Write a message, please.");
+                    document.getElementById("sentText").innerHTML = "";
+                }else{
+
+                    var user_from_api = document.getElementById("from_api_user_id").innerHTML;
+                    var user_id= parseInt (user_from_api.replace("<p>","").replace("</p>",""));
+                    // alert(user_id);
+                    var type = document.getElementById('post_msg_type');
+                    var msgType = type.options[type.selectedIndex].value;
+    
+                    var CurrentDate = new Date();
+    
+                    // Format
+                    var dd = ('0' + CurrentDate.getDate()).slice(-2);
+                    var mm = ('0' + (CurrentDate.getMonth()+1)).slice(-2);
+                    var yyyy = CurrentDate.getFullYear();
+                    var hh = ('0' + (CurrentDate.getHours()+1)).slice(-2) ;
+                    var mi = ('0' + CurrentDate.getMinutes()).slice(-2);
+                    var ss = ('0' + CurrentDate.getSeconds()).slice(-2);
+                    var dateString = yyyy+"-"+mm+"-"+dd+'T'+hh+":"+mi+":"+ss+'Z';
+                    // format:
+                    // "insert_time": "2022-06-15T20:49:20Z",
+                    // alert(dateString);
+    
+                    // fetch("http://localhost:8080/messages", {
+                    fetch("https://trebas-project-one.herokuapp.com/messages", {
+                        method: "POST",
+                        body: JSON.stringify({
+                            "insert_time": dateString,
+                            "text": text,
+                            "msgType": msgType,
+                            "user": {
+                                "id": user_id
+                            }
+                        }),
+                        headers: {
+                            "Content-type": "application/json; charset=UTF-8"
+                        }
+                    })
+                    .then(response => response.json())
+
+                    document.getElementById("sentText").innerHTML = "Successfully sent!";
+    
+                    document.getElementById("messages").value = "";
+                    document.getElementById("post_text").value = "";
+                }
+            }
+
+
+            function fcnGET() { 
+                document.getElementById("sentText").innerHTML = "";
+                // fetch("http://localhost:8080/messages")
+                fetch("https://trebas-project-one.herokuapp.com/messages")
+                .then(response => response.json())
+                .then(json => {
+                    let li = `<tr><th align="left";>Insert Time</th><th align="left";>Name</th><th align="left";>Type</th><th align="left";>Message</th></tr>`;
+                    json.forEach(message => {
+                        li += `<tr>
+                            <td>${message.insert_time}</td>		
+                            <td>${message.user.name}</td>		
+                            <td>${message.msgType} </td>
+                            <td>${message.text} </td>
+                        </tr>`;
+                    });
+
+                    document.getElementById("messages").innerHTML = li;
+                });
+            }
+
+        </script>
+        <!-- ----------------------------------------------------------- -->
+    </body>
+
+</html>

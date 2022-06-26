@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+
+        <title>API tests</title>
+        
+        <style>
+            body {
+              background-color:beige;
+              padding-top: 30px;
+              padding-left: 70px;
+              padding-right: 70px;
+              padding-bottom: 70px;
+              padding-top: 20;
+            }
+            ul { 
+                width: 50%;
+                list-style-type: none;
+                margin: 0;
+                padding: 0;
+                overflow: hidden;
+                background-color: rgb(59, 59, 59);
+            }
+            li { float: left; padding: 2px;}
+            li a { 
+                display: block;
+                color: white;
+                text-align: center;
+                padding: 10px 12px;
+                text-decoration: none;
+            }
+            a:hover:not(.active) {
+                background-color: rgb(100, 112, 124);
+            }
+            .active {
+                background-color: rgb(99, 158, 236);
+            }
+            h2 {
+                color: rgb(24, 66, 121);
+                width: 60%;
+                font-size: xx-large;
+                font-family: fantasy;
+                font-stretch:extra-expanded;
+                padding: 5;
+            }
+            .div1 {
+                flex: 1;
+                background-color: rgba(247, 239, 137, 0.651);
+                border-radius: 5;
+                border:2;
+                align-items: center;
+                justify-content: center;
+                padding: 3%;
+            }
+            .classOne {
+                color: #d4128a;
+                /* background-color: bisque; */
+                width: 15%;
+            }
+            .button {
+                background-color: #132a77;
+                border-radius: 10px;
+                /* border: none; */
+                color: white;
+                padding: 15px 32px;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 16px;
+                margin: 5px 5px;
+                margin-right: 10px;
+                cursor: pointer;
+                -webkit-transition-duration: 0.4s; /* Safari */
+                transition-duration: 0.4s;
+            }
+            .buttonEntry {
+                background-color: #132a77;
+                border-radius: 10px;
+                border-style:groove;
+                border-color: rgb(13, 108, 185);
+                /* border: none; */
+                color: white;
+                padding: 5px 10px;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 12px;
+                margin: 2px 2px;
+                /* margin-left: 8px; */
+                cursor: pointer;
+                -webkit-transition-duration: 0.4s; /* Safari */
+                transition-duration: 0.4s;
+            }
+
+            .button1 {
+                box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+            }
+            select{
+                width: 30%;
+            }
+            textarea{
+                margin-top: 1%;
+                width: 30%;
+            }
+            input{
+                width: 20%;
+                height: 25px;
+                border-radius: 10px;
+                border-style:groove;
+                border-color: rgb(13, 108, 185);
+                color: #132a77;
+                margin: -2px;
+            }
+            .loader {
+                align-self: center;
+                border: 10px solid #f3f3f3;
+                border-radius: 50%;
+                border-top: 10px solid #132a77;
+                width: 35px;
+                height: 35px;
+                -webkit-animation: spin 1s linear infinite; /* Safari */
+                animation: spin 1s linear infinite;
+            }
+            /* Safari */
+            @-webkit-keyframes spin {
+            0% { -webkit-transform: rotate(0deg); }
+            100% { -webkit-transform: rotate(360deg); }
+            }
+
+            @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+            }
+
+
+        </style>
+
+    </head>
+
+
+    <body onload=hideElement()>
+        <center>
+            <br>
+            <br>
+            <!-- Pages list -->
+            <ul>
+                <li><a  href="home.html">Home</a></li>
+                <li><a  href="Trebas-Project-One.html">Trebas Project One</a> </li>
+                <li><a class="active" href="Trebas-Project-Two.html">Trebas Project Two</a> </li>
+            </ul>
+            <hr width="50%">
+        </center>
+        <center>
+            <h2> TREBAS COFFEE SHOP PROJECT </h2>
+        </center>
+
+        <!-- ENTER PAGE - PROJECT NAME - CONTAINER -->
+        <div class="entryContainer">
+            <center>
+                Enter the project name:
+                <p>
+                    <input type="text" name="projectname" size="15" maxlength="30" id="project_name" />
+                    <button align="center" class="buttonEntry button1" onclick="loginElement()">ENTER</button>
+                </p>
+                <!-- Password:
+                <p>
+                    <input type="text" name="projectpass" size="15" maxlength="30" id="project_pass" />
+                </p> -->
+                <div class="loader"></div>
+                <p id="from_api_project_id"></p>
+            </center>
+
+
+        </div>
+
+        <!-- SELECT BUTTONS PAGE - SELECT ENTITY - CONTAINER -->
+        <div class="container">
+            <center>
+
+                <!-- <p id="from_api_project_id"></p> -->
+                <p style="margin-top: -160px; font-size: larger; font-family: Impact; color: rgb(13, 108, 185);" id="from_api_project_name"></p>
+
+                <button class="button button1" onclick="fcnGETProducts()">PRODUCTS</button>
+                <button class="button button1" onclick="fcnGETFeedstocks()">FEEDSTOCKS</button>
+                <button class="button button1" onclick="fcnGETSales()">SALES</button>
+                <button class="button button1" onclick="fcnGETPurchases()">PURCHASES</button>
+                
+                <br><br>
+    
+                <table id="messages" style="width: 85%"></table>
+
+            </center>
+        </div>
+
+
+
+
+        <!-- ------------------------------------------------------------------------------ -->
+
+        <script>
+
+            function hideElement() {
+                element = document.querySelector('.container');
+                element.style.visibility = 'hidden';
+                elementLoader = document.querySelector('.loader');
+                elementLoader.style.visibility = 'hidden';
+            }
+
+
+            function loginElement() {
+                var project_name = document.getElementById("project_name").value;
+                if( project_name.length > 1 ){
+
+                    elementEntry = document.querySelector('.entryContainer');
+                    elementLoader = document.querySelector('.loader');
+                    element = document.querySelector('.container');
+
+                    elementEntry.style.visibility = 'hidden';
+                    elementLoader.style.visibility = 'visible';
+
+                    fetch("https://asm-manager.herokuapp.com/project/find-by-name?name="+project_name+"&pssd=1234")
+                    .then(response => response.json())
+                    .then(json => {
+                        let api_id = `<p>${json.id}</p>`
+                        let api_name = `<p>${json.name}</p>`
+                        
+                        if(api_name==`<p>${project_name}</p>`){
+                            elementLoader.style.visibility = 'hidden';
+                            element.style.visibility = 'visible';
+                            document.getElementById("from_api_project_id").innerHTML = api_id;
+                            document.getElementById("from_api_project_name").innerHTML = api_name;  
+                        }else{
+                            alert("Project not found");
+                            elementEntry.style.visibility = 'visible';
+                            elementLoader.style.visibility = 'hidden';
+                        }
+                    }).catch((e) => {
+                        // handle errors and timeout error
+                        alert("error: Project not found");
+                        elementEntry.style.visibility = 'visible';
+                        elementLoader.style.visibility = 'hidden';
+                    });
+                }else{
+                    alert("Enter project name, please");
+                }
+            }
+    
+            
+
+            function fcnGETProducts() { 
+                var project_from_api = document.getElementById("from_api_project_id").innerHTML;
+                var project_id= project_from_api.replace("<p>","").replace("</p>","");
+                fetch("https://asm-manager.herokuapp.com/product/by-project-id/"+project_id)
+                .then(response => response.json())
+                .then(json => {
+                    let li = `<tr><th align="left";>Id</th>
+                        <th align="left";>Name</th>
+                        <th align="left";>Price</th>
+                        <th align="left";>Production Cost</th>
+                        <th align="left";>Profit</th>
+                        <th align="left";>Insert_time</th>
+                        <th align="left";>Update_time</th>
+                        </tr>`;
+                    json.forEach(message => {
+                        li += `<tr>
+                            <td>${message.id} </td>
+                            <td>${message.name}</td>
+                            <td>$ ${message.price}</td>
+                            <td>$ ${message.minPrice}</td>
+                            <td>$ ${message.price-message.minPrice}</td>
+                            <td>${message.insert_time}</td>		
+                            <td>${message.update_time}</td>		
+                        </tr>`;
+                    });
+
+                    document.getElementById("messages").innerHTML = li;
+                });
+            }
+
+
+
+            function fcnGETFeedstocks() { 
+                var project_from_api = document.getElementById("from_api_project_id").innerHTML;
+                var project_id= project_from_api.replace("<p>","").replace("</p>","");
+                fetch("https://asm-manager.herokuapp.com/feedstock/by-project-id/"+project_id)
+                .then(response => response.json())
+                .then(json => {
+                    let li = `<tr><th align="left";>Id</th>
+                        <th align="left";>Name</th>
+                        <th align="left";>Price</th>
+                        <th align="left";>Quantity</th>
+                        <th align="left";>Unity</th>
+                        <th align="left";>CriticalQuantity</th>
+                        <th align="left";>Category</th>
+                        <th align="left";>Update_time</th>
+                        </tr>`;
+                    json.forEach(message => {
+                        li += `<tr>
+                            <td>${message.id} </td>
+                            <td>${message.name}</td>
+                            <td>$ ${message.price}</td>	
+                            <td>${message.quantity}</td>	
+                            <td>${message.unity}</td>	
+                            <td>${message.criticalQuantity}</td>	
+                            <td>${message.feedCategory}</td>	
+                            <td>${message.update_time}</td>		
+                        </tr>`;
+                    });
+
+                    document.getElementById("messages").innerHTML = li;
+                });
+            }
+
+
+
+            function fcnGETSales() { 
+                var project_from_api = document.getElementById("from_api_project_id").innerHTML;
+                var project_id= project_from_api.replace("<p>","").replace("</p>","");
+                fetch("https://asm-manager.herokuapp.com/sale/by-project-id/"+project_id)
+                .then(response => response.json())
+                .then(json => {
+                    let li = `<tr><th align="left";>Id</th>
+                        <th align="left";>Price</th>
+                        <th align="left";>Insert_time</th>
+                        </tr>`;
+                    json.forEach(message => {
+                        li += `<tr>
+                            <td>${message.id} </td>
+                            <td>$ ${message.price}</td>	
+                            <td>${message.insert_time}</td>		
+                        </tr>`;
+                    });
+
+                    document.getElementById("messages").innerHTML = li;
+                });
+            }
+
+
+
+            function fcnGETPurchases() { 
+                var project_from_api = document.getElementById("from_api_project_id").innerHTML;
+                var project_id= project_from_api.replace("<p>","").replace("</p>","");
+                fetch("https://asm-manager.herokuapp.com/purchase/by-project-id/"+project_id)
+                .then(response => response.json())
+                .then(json => {
+                    let li = `<tr><th align="left";>Id</th>
+                        <th align="left";>Price</th>
+                        <th align="left";>Insert_time</th>
+                        </tr>`;
+                    json.forEach(message => {
+                        li += `<tr>
+                            <td>${message.id} </td>
+                            <td>$ ${message.price}</td>	
+                            <td>${message.insert_time}</td>		
+                        </tr>`;
+                    });
+
+                    document.getElementById("messages").innerHTML = li;
+                });
+            }
+
+
+
+        </script>
+        <!-- ------------------------------------------------------------------------------ -->
+
+    </body>
+
+</html>
